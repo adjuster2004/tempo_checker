@@ -1,0 +1,9 @@
+{
+  "teams": [
+    {"id": 91, "name": "stream1-team"},
+    {"id": 92, "name": "stream2-team"},
+    {"id": 93, "name": "stream3-team"},
+    {"id": 94, "name": "stream4-team"},
+    {"id": 95, "name": "backend-team"}
+  ]
+}

@@ -1,6 +1,6 @@
 // config.js - модульная версия для Chrome Extension
 
-const JIRA_URL = 'https://jira.examle.com';
+const JIRA_URL = 'https://jira.example.com';
 const TEMPO_BASE_PATH = '/secure/Tempo.jspa';
 const API_BASE = '/rest/api/2';
 

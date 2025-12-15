@@ -20,6 +20,8 @@
 
 <img width="552" height="366" alt="image" src="https://github.com/user-attachments/assets/e87554f7-60c1-4522-887f-e8df50dbf810" />
 
+- **Изменить** значение example.com на свой домен в файлах **config-content.js config.js manifest.json**
+
 ### 👥 Клонирование репозитория
 
 ```bash

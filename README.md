@@ -26,6 +26,24 @@
 git clone https://github.com/adjuster2004/empo_checker/
 ```
 
+## 🛠️ Как выглядит
+
+
+Главный экран
+
+<img width="381" height="421" alt="image" src="https://github.com/user-attachments/assets/ec6c169a-c51c-4b31-ac80-8070cc11f7d9" />
+
+
+Настройки
+
+<img width="381" height="421" alt="image" src="https://github.com/user-attachments/assets/fe777ccf-ee6d-4ff6-8f24-10d12fcf3368" />
+
+
+Статус
+
+<img width="381" height="421" alt="image" src="https://github.com/user-attachments/assets/b2143ffc-1210-4d00-b19c-7a6a15849de0" />
+
+
 ## 📄 Лицензия
 Этот проект распространяется под лицензией **MIT**.
 

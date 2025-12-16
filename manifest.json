@@ -1,30 +1,12 @@
-
 {
   "manifest_version": 3,
   "name": "Tempo Checker",
-  "version": "1.0.0",
-  "description": "Проверка заполнения Tempo в Jira",
-
-  "background": {
-    "service_worker": "background-main.js",
-    "type": "module"
-  },
-
-  "permissions": [
-    "storage",
-    "notifications",
-    "alarms",
-    "tabs",
-    "cookies",
-    "scripting"
-  ],
-
-  "host_permissions": [
-    "https://jira.example.com/*"
-  ],
-
+  "version": "1.0",
+  "description": "Автоматическая проверка статусов Tempo в Jira",
+  
   "action": {
     "default_popup": "popup.html",
+    "default_title": "Tempo Checker",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -46,10 +28,29 @@
     }
   ],
 
+  "background": {
+    "service_worker": "background-main.js",
+    "type": "module"
+  },
+
+  "permissions": [
+    "storage",
+    "notifications",
+    "alarms",
+    "tabs",
+    "cookies",
+    "idle",
+    "scripting"
+  ],
+
+  "host_permissions": [
+    "https://jira.example.com/*"
+  ],
+  
   "web_accessible_resources": [
     {
-      "resources": ["teams.json", "config.js"],
-      "matches": ["<all_urls>"]
+      "resources": ["teams.json", "icons/*"],
+      "matches": ["https://jira.example.com/*"]
     }
   ]
 }

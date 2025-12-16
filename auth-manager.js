@@ -2,7 +2,7 @@
 // Модуль управления авторизацией
 
 import { tempoData } from './tempo-data.js';
-import * as CONFIG from './config.js'; // Импортируем конфиг как именованный экспорт
+import { CONFIG } from './config.js'; // Исправлен импорт
 
 // Проверяем, загружен ли конфиг
 if (!CONFIG) {
@@ -10,7 +10,7 @@ if (!CONFIG) {
     throw new Error('CONFIG не инициализирован');
 }
 
-const JIRA_URL = CONFIG.CONFIG.JIRA.URL; // или CONFIG.default.JIRA.URL
+const JIRA_URL = CONFIG.JIRA.URL; // или CONFIG.default.JIRA.URL
 
 // Проверка авторизации в Jira
 async function checkAuthentication() {
@@ -72,6 +72,7 @@ async function checkTeamsPageAccess() {
             console.error('[AuthManager] URL_TEMPLATES.TEMPO_HOME не определен');
             return false;
         }
+        const JIRA_URL = CONFIG.JIRA.URL;
 
         // Пробуем получить заголовок страницы через fetch
         const response = await fetch(CONFIG.URL_TEMPLATES.TEMPO_HOME(), {

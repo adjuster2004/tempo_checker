@@ -1,24 +1,21 @@
-// config.js - модульная версия для Chrome Extension
+// shared-config.js - ЕДИНЫЙ источник конфигурации для всего расширения
 
-const JIRA_URL = 'https://jira.example.com';
-const TEMPO_BASE_PATH = '/secure/Tempo.jspa';
-const API_BASE = '/rest/api/2';
-
+// Сначала определяем конфигурацию как константу
 const CONFIG = {
     JIRA: {
-        URL: JIRA_URL,
-        TEMPO_BASE_PATH: TEMPO_BASE_PATH,
-        API_BASE: API_BASE
+        URL: 'https://jira.example.com', // ТОЛЬКО ЗДЕСЬ!
+        TEMPO_BASE_PATH: '/secure/Tempo.jspa',
+        API_BASE: '/rest/api/2'
     },
     URL_TEMPLATES: {
-        JIRA_HOME: () => JIRA_URL,
-        TEMPO_HOME: () => `${JIRA_URL}${TEMPO_BASE_PATH}`,
+        JIRA_HOME: () => CONFIG.JIRA.URL,
+        TEMPO_HOME: () => `${CONFIG.JIRA.URL}${CONFIG.JIRA.TEMPO_BASE_PATH}`,
         TEAM_APPROVALS: (teamId, date = '') => {
-            const baseUrl = `${JIRA_URL}${TEMPO_BASE_PATH}#/teams/team/${teamId}/approvals`;
+            const baseUrl = `${CONFIG.JIRA.URL}${CONFIG.JIRA.TEMPO_BASE_PATH}#/teams/team/${teamId}/approvals`;
             return date ? `${baseUrl}?date=${date}` : baseUrl;
         },
-        USER_API: () => `${JIRA_URL}${API_BASE}/myself`,
-        TEAM_MEMBERS: (teamId) => `${JIRA_URL}${TEMPO_BASE_PATH}#/teams/team/${teamId}/members`
+        USER_API: () => `${CONFIG.JIRA.URL}${CONFIG.JIRA.API_BASE}/myself`,
+        TEAM_MEMBERS: (teamId) => `${CONFIG.JIRA.URL}${CONFIG.JIRA.TEMPO_BASE_PATH}#/teams/team/${teamId}/members`
     },
     CHECK: {
         DEFAULT_TEAM_ID: 91,
@@ -38,12 +35,17 @@ const CONFIG = {
         ICON_URL: 'icons/icon48.png'
     },
     CONTENT_SCRIPTS: {
-        MATCHES: ['https://jira.example.com/*']
+        MATCHES: [`https://jira.example.com/*`]
     }
 };
 
-// Экспортируем как именованный экспорт
+// Экспортируем конфиг
 export { CONFIG };
 
-// Для обратной совместимости с content scripts можно также экспортировать дефолтный
-export default CONFIG;
+// Для обратной совместимости в браузерной среде
+if (typeof window !== 'undefined') {
+    // Используем setTimeout, чтобы убедиться, что CONFIG полностью инициализирован
+    setTimeout(() => {
+        window.TEMPO_CONFIG = CONFIG;
+    }, 0);
+}

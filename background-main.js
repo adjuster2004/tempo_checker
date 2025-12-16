@@ -108,41 +108,35 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 chrome.notifications.onClicked.addListener((notificationId) => {
     console.log(`[TempoChecker] Кликнули по уведомлению: ${notificationId}`);
 
-    // Определяем тип уведомления по содержимому
-    chrome.notifications.get(notificationId, (notification) => {
-        if (!notification) return;
+    // Определяем тип уведомления по ID или содержимому
+    // В Manifest v3 нельзя использовать chrome.notifications.get(), поэтому
+    // определяем по самому notificationId или сохраняем информацию при создании
 
-        const title = notification.title || '';
-        const message = notification.message || '';
-
-        if (title.includes('авторизация') || message.includes('авторизация') ||
-            title.includes('authorization') || message.includes('authorization')) {
-            // Открываем Jira для авторизации
-            chrome.tabs.create({
-                url: JIRA_URL,
-                active: true
-            });
-        } else if (title.includes('DNS') || title.includes('недоступен') ||
-                   message.includes('DNS') || message.includes('недоступен')) {
-            // Открываем Jira для проверки доступности
-            chrome.tabs.create({
-                url: JIRA_URL
-            });
-        } else if (title.includes('не отправили') || message.includes('не отправили')) {
-            // Открываем страницу Tempo с текущей командой
-            chrome.tabs.create({
-                url: `${CONFIG.JIRA.URL}/secure/Tempo.jspa#/teams/team/${tempoData.selectedTeamId}/approvals`
-            });
-        } else if (title.includes('Плагин')) {
-            // Для уведомлений о состоянии плагина ничего не делаем
-            return;
-        } else {
-            // По умолчанию открываем Tempo
-            chrome.tabs.create({
-                url: `${CONFIG.JIRA.URL}/secure/Tempo.jspa#/teams/team/${tempoData.selectedTeamId}/approvals`
-            });
-        }
-    });
+    if (notificationId.includes('auth') || notificationId.includes('authorization')) {
+        // Открываем Jira для авторизации
+        chrome.tabs.create({
+            url: JIRA_URL,
+            active: true
+        });
+    } else if (notificationId.includes('dns') || notificationId.includes('unavailable')) {
+        // Открываем Jira для проверки доступности
+        chrome.tabs.create({
+            url: JIRA_URL
+        });
+    } else if (notificationId.includes('tempo') || notificationId.includes('not_submitted')) {
+        // Открываем страницу Tempo с текущей командой
+        chrome.tabs.create({
+            url: `${CONFIG.JIRA.URL}/secure/Tempo.jspa#/teams/team/${tempoData.selectedTeamId}/approvals`
+        });
+    } else if (notificationId.includes('plugin')) {
+        // Для уведомлений о состоянии плагина ничего не делаем
+        return;
+    } else {
+        // По умолчанию открываем Tempo
+        chrome.tabs.create({
+            url: `${CONFIG.JIRA.URL}/secure/Tempo.jspa#/teams/team/${tempoData.selectedTeamId}/approvals`
+        });
+    }
 });
 
 // Слушатель закрытия уведомлений (для логирования)
@@ -285,6 +279,7 @@ function disablePlugin(reason = 'Отключено пользователем')
 // Показать уведомление об изменении состояния плагина
 async function showStateChangeNotification(isEnabled) {
     try {
+        const notificationId = `plugin_state_${Date.now()}`;
         const title = isEnabled
             ? 'Tempo Checker: Плагин включен'
             : 'Tempo Checker: Плагин отключен';
@@ -293,7 +288,7 @@ async function showStateChangeNotification(isEnabled) {
             ? 'Автоматические проверки возобновлены'
             : 'Автоматические проверки приостановлены';
 
-        await chrome.notifications.create({
+        await chrome.notifications.create(notificationId, {
             type: 'basic',
             iconUrl: 'icons/icon48.png',
             title: title,

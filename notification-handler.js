@@ -1,7 +1,7 @@
 // notification-handler.js - Исправленная версия
 // Обработчик уведомлений
 
-import * as CONFIG from './config.js'; // Изменено: фигурные скобки
+import { CONFIG } from './config.js';
 
 function setupNotificationHandlers() {
     chrome.notifications.onClicked.addListener(() => {

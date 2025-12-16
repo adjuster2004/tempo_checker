@@ -15,7 +15,8 @@ const ICON_PATHS = {
 
 class IconManager {
     constructor() {
-        // Создаем отключенные версии иконок (можно сделать серыми)
+        this.isManifestV3 = typeof chrome.action !== 'undefined';
+        console.log('[IconManager] Manifest version:', this.isManifestV3 ? 'v3' : 'v2');
         this.createDisabledIcons();
     }
 
@@ -31,22 +32,38 @@ class IconManager {
         try {
             const iconSet = isEnabled ? ICON_PATHS.enabled : ICON_PATHS.disabled;
 
-            // Устанавливаем иконку
-            chrome.action.setIcon({
-                path: iconSet
-            });
+            // Проверяем доступность API
+            if (this.isManifestV3) {
+                // Manifest v3
+                await chrome.action.setIcon({
+                    path: iconSet
+                });
 
-            // Обновляем тултип
-            chrome.action.setTitle({
-                title: isEnabled
-                    ? 'Tempo Checker - Включен'
-                    : 'Tempo Checker - Отключен'
-            });
+                // Обновляем тултип
+                await chrome.action.setTitle({
+                    title: isEnabled
+                        ? 'Tempo Checker - Включен'
+                        : 'Tempo Checker - Отключен'
+                });
+            } else {
+                // Manifest v2 (для обратной совместимости)
+                await chrome.browserAction.setIcon({
+                    path: iconSet
+                });
+
+                // Обновляем тултип
+                await chrome.browserAction.setTitle({
+                    title: isEnabled
+                        ? 'Tempo Checker - Включен'
+                        : 'Tempo Checker - Отключен'
+                });
+            }
 
             console.log(`[IconManager] Иконка обновлена: ${isEnabled ? 'ВКЛ' : 'ВЫКЛ'}`);
 
         } catch (error) {
             console.error('[IconManager] Ошибка обновления иконки:', error);
+            // Не прерываем выполнение, т.к. это не критическая ошибка
         }
     }
 
